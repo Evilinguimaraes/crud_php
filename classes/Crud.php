@@ -42,5 +42,39 @@ class Crud{
         $stmt->execute();
         return $stmt;
     }
+    public function update($postValues){
+        $id = $postValues['id'];
+        $modelo = $postValues['modelo'];
+        $marca = $postValues['marca'];
+        $placa = $postValues['placa'];
+        $cor = $postValues['cor'];
+        $ano = $postValues['ano'];
+
+        if(empty($id) || empty($modelo) || empty($marca) || empty($placa) || empty($cor) || empty($ano)){
+            return false; 
+        }
+        $query = "UPDATE". $this->table_name . " SET modelo = ?, marca = ?, placa = ?, cor = ?, ano = ? WERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->blindParam(1,$modelo);
+        $stmt->blindParam(2,$marca);
+        $stmt->blindParam(3,$placa);
+        $stmt->blindParam(4,$cor);
+        $stmt->blindParam(5,$ano);
+        $stmt->blindParam(6,$id);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    public function readOne($id){
+        $query = "SELECT * FROM ". $this->table_name . " WHERE id = ?";
+        $stmt =$this->conn->prepare($query);
+        $stmt->bindParam(1, $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
 ?>
